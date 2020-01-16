@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.movie_row.view.*
 
-class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<CustomViewHolder>() {
+class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<VideoGameViewHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoGameViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val cellForRow = layoutInflater.inflate(R.layout.movie_row, parent, false)
-        return CustomViewHolder(cellForRow)
+        return VideoGameViewHolder(cellForRow)
     }
 
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: VideoGameViewHolder, position: Int) {
         val currentGame = gameList[position]
 
         holder.view.textView_game_title.text = currentGame.name
@@ -25,7 +25,7 @@ class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<Cust
         holder.view.textView_date.text = SimpleDateFormat("dd MMM, YYYY").format(currentGame.date)
         Picasso.get()
             .load(currentGame.imageURL)
-            .resize(1280, 640)
+            .resize(1280, 720)
             .centerCrop()
             .placeholder(R.drawable.progress_animation)
             .into(holder.view.imageView)
@@ -37,4 +37,4 @@ class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<Cust
 
 }
 
-class CustomViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+class VideoGameViewHolder(val view: View) : RecyclerView.ViewHolder(view)

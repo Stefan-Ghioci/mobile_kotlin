@@ -1,5 +1,6 @@
 package mobileapps.mobile_kotlin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,11 +18,17 @@ class MainActivity : AppCompatActivity() {
         recyclerView_main.layoutManager = LinearLayoutManager(this)
 
         fetchGames()
+
+        floatingActionButton.setOnClickListener {
+            val intent = Intent(recyclerView_main.context, VideoGameActivity::class.java)
+
+            recyclerView_main.context.startActivity(intent)
+        }
     }
 
     private fun fetchGames() {
         println("Attempting to Fetch JSON")
-        val url = "http://192.168.42.47:8080/mobileapps/games"
+        val url = "http://192.168.56.1:8080/mobileapps/games"
         val request = Request.Builder().url(url).header("Accept", "application/json").build()
         val client = OkHttpClient()
 
