@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">mobile_kotlin</string>
+    <string name="game_title">Game Title</string>
+    <string name="release_date">Release Date</string>
+    <string name="image_url">Image URL</string>
+    <string name="add_game">Add Game</string>
 </resources>

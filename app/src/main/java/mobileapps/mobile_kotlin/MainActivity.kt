@@ -16,14 +16,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyclerView_main.layoutManager = LinearLayoutManager(this)
+        recyclerView_main.adapter = MainAdapter(emptyArray())
 
-        fetchGames()
 
         floatingActionButton.setOnClickListener {
             val intent = Intent(recyclerView_main.context, VideoGameActivity::class.java)
-
             recyclerView_main.context.startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchGames()
     }
 
     private fun fetchGames() {
@@ -37,17 +41,19 @@ class MainActivity : AppCompatActivity() {
                 println("Failed to execute fetch request: ${e.message}")
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                println("Fetch request executed successfully")
+            override fun onResponse(call: Call, response: Response) = when {
+                response.isSuccessful -> {
+                    println("Game List successfully received from server")
 
-                val body = response.body?.string()
-                val gson = GsonBuilder().create()
-                val gameList = gson.fromJson(body, Array<Game>::class.java)
+                    val body = response.body?.string()
+                    val gson = GsonBuilder().create()
+                    val gameList = gson.fromJson(body, Array<Game>::class.java)
 
-//            gameList.forEach { println(it) }
-                runOnUiThread {
-                    recyclerView_main.adapter = MainAdapter(gameList)
+                    runOnUiThread {
+                        recyclerView_main.adapter = MainAdapter(gameList)
+                    }
                 }
+                else -> println("Server declined request")
             }
         })
     }

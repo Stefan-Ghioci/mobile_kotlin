@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.movie_row.view.*
+import kotlinx.android.synthetic.main.fragment_video_game.view.*
 
 class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<VideoGameViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoGameViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val cellForRow = layoutInflater.inflate(R.layout.movie_row, parent, false)
+        val cellForRow = layoutInflater.inflate(R.layout.fragment_video_game, parent, false)
         return VideoGameViewHolder(cellForRow)
     }
 
@@ -23,11 +23,16 @@ class MainAdapter(private val gameList: Array<Game>) : RecyclerView.Adapter<Vide
         holder.view.textView_game_title.text = currentGame.name
         holder.view.ratingBar.rating = currentGame.rating.toFloat()
         holder.view.textView_date.text = SimpleDateFormat("dd MMM, YYYY").format(currentGame.date)
+        val imageURL =
+            if (currentGame.imageURL.isNotEmpty()) currentGame.imageURL
+            else "https://aprov.ro/wp-content/themes/brixel/images/No-Image-Found-400x264.png"
+
         Picasso.get()
-            .load(currentGame.imageURL)
-            .resize(1280, 720)
-            .centerCrop()
+            .load(imageURL)
             .placeholder(R.drawable.progress_animation)
+            .resize(1280, 720)
+            .onlyScaleDown()
+            .centerCrop()
             .into(holder.view.imageView)
     }
 
