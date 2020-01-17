@@ -3,7 +3,6 @@ package mobileapps.mobile_kotlin
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.GsonBuilder
@@ -24,12 +23,13 @@ class MainActivity : BaseActivity() {
         recyclerView_main.adapter = MainAdapter(gameList)
 
 
-        floatingActionButton.setOnClickListener {
-            val intent = Intent(recyclerView_main.context, VideoGameActivity::class.java)
-            recyclerView_main.context.startActivity(intent)
+        floatingActionButton_add.setOnClickListener {
+            val intent = Intent(this@MainActivity, VideoGameActivity::class.java)
+
+            startActivity(intent)
         }
 
-        button_email.setOnClickListener {
+        floatingActionButton_mail.setOnClickListener {
             val subject = "Mobile App: Video Games List"
             var message = ""
             gameList.forEach { game ->
@@ -44,13 +44,7 @@ class MainActivity : BaseActivity() {
         }
         fetchGames()
 
-        val errorFromAdd = intent.getIntExtra("error", -1)
-        println(errorFromAdd)
-        showSnackBar(errorFromAdd)
-    }
-
-    private fun showStats(): View.OnClickListener? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        showSnackBar(intent.getIntExtra("error", -1))
     }
 
 
