@@ -3,6 +3,7 @@ package mobileapps.mobile_kotlin
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.GsonBuilder
@@ -12,12 +13,15 @@ import java.io.IOException
 
 class MainActivity : BaseActivity() {
 
+    private lateinit var gameList: Array<Game>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         recyclerView_main.layoutManager = LinearLayoutManager(this)
-        recyclerView_main.adapter = MainAdapter(emptyArray())
+        gameList = emptyArray()
+        recyclerView_main.adapter = MainAdapter(gameList)
 
 
         floatingActionButton.setOnClickListener {
@@ -25,13 +29,34 @@ class MainActivity : BaseActivity() {
             recyclerView_main.context.startActivity(intent)
         }
 
+        button_email.setOnClickListener {
+            val subject = "Mobile App: Video Games List"
+            var message = ""
+            gameList.forEach { game ->
+                message += "$game\n\n"
+            }
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+            intent.putExtra(Intent.EXTRA_TEXT, message)
+            intent.type = "message/rfc822"
+            startActivity(Intent.createChooser(intent, "Send Email using:"))
+        }
+        fetchGames()
+
         val errorFromAdd = intent.getIntExtra("error", -1)
         println(errorFromAdd)
         showSnackBar(errorFromAdd)
     }
 
+    private fun showStats(): View.OnClickListener? {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+
     private fun showSnackBar(errorFromAdd: Int) {
         if (errorFromAdd == 0) {
+            fetchGames()
             val snack = Snackbar.make(
                 recyclerView_main,
                 "Game added successfully",
@@ -51,11 +76,6 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        fetchGames()
-    }
-
     private fun fetchGames() {
         println("Attempting to Fetch JSON")
         val url = "http://192.168.56.1:8080/mobileapps/games"
@@ -73,7 +93,7 @@ class MainActivity : BaseActivity() {
 
                     val body = response.body?.string()
                     val gson = GsonBuilder().create()
-                    val gameList = gson.fromJson(body, Array<Game>::class.java)
+                    gameList = gson.fromJson(body, Array<Game>::class.java)
 
                     runOnUiThread {
                         recyclerView_main.adapter = MainAdapter(gameList)

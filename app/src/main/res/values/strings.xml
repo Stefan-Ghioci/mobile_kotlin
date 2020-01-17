@@ -4,4 +4,6 @@
     <string name="release_date">Release Date</string>
     <string name="image_url">Image URL</string>
     <string name="add_game">Add Game</string>
+    <string name="share_with_email">Share with email</string>
+    <string name="stats">Stats</string>
 </resources>
