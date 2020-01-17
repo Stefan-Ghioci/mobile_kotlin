@@ -2,7 +2,6 @@ package mobileapps.mobile_kotlin
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.vvalidator.form
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_add_game.*
@@ -10,7 +9,7 @@ import okhttp3.*
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-class VideoGameActivity : AppCompatActivity() {
+class VideoGameActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_game)
@@ -36,6 +35,7 @@ class VideoGameActivity : AppCompatActivity() {
             submitWith(R.id.button_add) { postGame() }
         }
     }
+
 
     data class GameDTO(
         val name: String,
@@ -71,17 +71,21 @@ class VideoGameActivity : AppCompatActivity() {
                 println("Failed to execute post request: ${e.message}")
             }
 
-            override fun onResponse(call: Call, response: Response) = when {
-                response.isSuccessful -> {
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
                     println("Game added with success")
-
-                    val intent = Intent(linearLayout_add_game.context, MainActivity::class.java)
-                    linearLayout_add_game.context.startActivity(intent)
-                }
-                else -> {
+                    goBack(0)
+                } else {
                     println("Failed to add game, server declined request")
+                    goBack(1)
                 }
             }
         })
+    }
+
+    private fun goBack(hasError: Int) {
+        val intent = Intent(this@VideoGameActivity, MainActivity::class.java)
+        intent.putExtra("error", hasError)
+        startActivity(intent)
     }
 }

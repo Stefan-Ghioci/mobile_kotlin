@@ -1,15 +1,16 @@
 package mobileapps.mobile_kotlin
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.GsonBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.*
 import java.io.IOException
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,6 +23,31 @@ class MainActivity : AppCompatActivity() {
         floatingActionButton.setOnClickListener {
             val intent = Intent(recyclerView_main.context, VideoGameActivity::class.java)
             recyclerView_main.context.startActivity(intent)
+        }
+
+        val errorFromAdd = intent.getIntExtra("error", -1)
+        println(errorFromAdd)
+        showSnackBar(errorFromAdd)
+    }
+
+    private fun showSnackBar(errorFromAdd: Int) {
+        if (errorFromAdd == 0) {
+            val snack = Snackbar.make(
+                recyclerView_main,
+                "Game added successfully",
+                Snackbar.LENGTH_SHORT
+            )
+            snack.view.setBackgroundColor(Color.parseColor("#388E3C"))
+            snack.show()
+
+        } else if (errorFromAdd == 1) {
+            val snack = Snackbar.make(
+                recyclerView_main,
+                "A server error occurred whilst adding the game :(",
+                Snackbar.LENGTH_LONG
+            )
+            snack.view.setBackgroundColor(Color.parseColor("#D32F2F"))
+            snack.show()
         }
     }
 
